@@ -11,6 +11,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   var changeButton = false;
   var name = "";
+  final _formKey = GlobalKey<FormState>() ;
 
   @override
   Widget build(BuildContext context) {
@@ -34,70 +35,74 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      onChanged: (value) {
-                        name = value;
-                        setState(() {});
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Enter Username",
-                        labelText: "Username",
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        onChanged: (value) {
+                          name = value;
+                          setState(() {});
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Enter Username",
+                          labelText: "Username",
+                        ),
+                        validator: (value){
+                          if(value!.isEmpty){
+                              return "User name can't be empty ";
+                          }
+                          return null ;
+                        },
                       ),
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: "Enter Password",
-                        labelText: "Password",
+                      TextFormField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: "Enter Password",
+                          labelText: "Password",
+                        ),
+                        validator: (value){
+                          if(value!.isEmpty){
+                            return "Password can't be empty ";
+                          }
+                          else if (value.length <4){
+                            return "Length can't be less then 4 ";
+                          }
+                          return null ;
+                        },
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     // print("clicked");
-                    //     // Navigator.pushNamed(context, MyRoutes.homeRoute);
-                    //   },
-                    //   child: Text("Login"),
-                    //   style: TextButton.styleFrom(),
-                    // ),
-                    InkWell(
-                      child: AnimatedContainer(
-                        duration: Duration(seconds: 1),
-                        child: Container(
-                          width: changeButton ? 120 : 50,
-                          height: 40,
-                          alignment: Alignment.center,
-                          // color: Colors.deepPurple,
-                          child: changeButton
-                              ? Icon(Icons.done)
-                              : Text(
-                                  "Login",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple,
-                            borderRadius:
-                                BorderRadius.circular(changeButton ? 20 : 8),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
+                        child: AnimatedContainer(
+                          duration: Duration(seconds: 1),
+                          child: Container(
+                            width: changeButton ? 120 : 50,
+                            height: 40,
+                            alignment: Alignment.center,
+                            // color: Colors.deepPurple,
+                            child: changeButton
+                                ? Icon(Icons.done)
+                                : Text(
+                                    "Login",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple,
+                              borderRadius:
+                                  BorderRadius.circular(changeButton ? 20 : 8),
+                            ),
                           ),
                         ),
-                      ),
-                      onTap: () async{
-                        setState(() {
-                          changeButton = true;
-                        });
-                        await Future.delayed(Duration(seconds: 1));
-                        print("Container clicked");
-                        Navigator.pushNamed(context, MyRoutes.homeRoute);
-                      },
-                    )
-                  ],
+                        onTap: () => moveToHome()
+                        ,
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
@@ -105,5 +110,16 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+   moveToHome() async{
+    if(_formKey.currentState!.validate()){
+      setState(() {
+        changeButton = true;
+      });
+      await Future.delayed(Duration(seconds: 1));
+      print("Container clicked");
+      Navigator.pushNamed(context, MyRoutes.homeRoute);
+    }
   }
 }
