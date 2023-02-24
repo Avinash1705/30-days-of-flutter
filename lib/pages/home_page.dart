@@ -42,10 +42,30 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Material(
         child: (CatelogModel.items != null && CatelogModel.items.isNotEmpty)
-            ? ListView.builder(
+            ? GridView.builder(
+                padding: EdgeInsets.all(10.0),
                 itemCount: CatelogModel.items.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    ItemWiget(item: CatelogModel.items[index]),
+                itemBuilder: (BuildContext context, int index) {
+                  final item = CatelogModel.items[index];
+                  return Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: GridTile(
+                        header: Container(
+                            child: Text(item.name,style: TextStyle(color: Colors.white),), color: Colors.deepPurple),
+                        child: Image.network(item.image),
+                        footer: Container(
+                            child: Text(item.price.toString(),style: TextStyle(color: Colors.white),),
+                            color: Colors.black )),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  );
+                },
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                ),
               )
             : Center(
                 child: CircularProgressIndicator(),
